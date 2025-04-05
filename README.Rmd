@@ -1,0 +1,16 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include=FALSE, echo=FALSE,message=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%")
+```
+
+# rForestInv
+
+`rForestInv` is an in-progress R package for performing basic analyses of forest inventory data. It is being built and designed for use in forest mensuration and biometrics courses at North Carolina State University. For any questions, contact Jeff Doser (jwdoser@ncsu.edu).  
