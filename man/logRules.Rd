@@ -3,7 +3,7 @@
 \title{Compute board foot volumes from board foot log rules}
 
 \usage{
-logRules(dia, logLength, rule, ...)
+logRules(dia, logLength, type, ...)
 }
 
 \description{
@@ -19,7 +19,7 @@ logRules(dia, logLength, rule, ...)
 
   \item{logLength}{the length of the log(s) in ft.}
 
-  \item{rule}{the name of the log rule to use for estimating lumber volume. Currently supported
+  \item{type}{the name of the log rule to use for estimating lumber volume. Currently supported
               log rules are Doyle (\code{'doyle'}), Scribner (\code{'scribner'}), and 
               International 1/4 inch (\code{'international'}).}
 
@@ -39,6 +39,6 @@ logRules(dia, logLength, rule, ...)
 \examples{
 scaling.dias <- c(8, 20, 18, 34)
 log.lengths <- c(16, 16, 12, 18)
-logRules(dia = scaling.dias, logLength = log.lengths, rule = 'doyle') 
+logRules(dia = scaling.dias, logLength = log.lengths, type = 'doyle') 
 }
 

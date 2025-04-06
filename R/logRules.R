@@ -1,4 +1,4 @@
-logRules <- function(dia, logLength, rule, ...) {
+logRules <- function(dia, logLength, type, ...) {
 
   # Some initial checks ---------------------------------------------------
   if (missing(dia)) {
@@ -7,8 +7,8 @@ logRules <- function(dia, logLength, rule, ...) {
   if (missing(logLength)) {
     stop('log length in feet (logLength) must be specified') 
   }
-  if (missing(rule)) {
-    stop('log rule (rule) must be specified')
+  if (missing(type)) {
+    stop('log rule (type) must be specified')
   }
   if (!is.numeric(dia)) {
     stop('dia must be a vector of numbers indicating the scaling diameter')
@@ -22,24 +22,24 @@ logRules <- function(dia, logLength, rule, ...) {
   if (any(logLength < 0)) {
     stop('at least one value in logLength is negative. Log lengths can only be positive.')
   }
-  if (!(tolower(rule) %in% c('international', 'doyle', 'scribner'))) {
-    stop('rule must be one of the following: "international", "doyle", "scribner"') 
+  if (!(tolower(type) %in% c('international', 'doyle', 'scribner'))) {
+    stop('type must be one of the following: "international", "doyle", "scribner"') 
   }
 
   # Doyle -----------------------------------------------------------------
-  if (tolower(rule) == 'doyle') {
+  if (tolower(type) == 'doyle') {
     # TODO: give error when logLength > maximum scaling length
     out <- ((dia - 4) / 4)^2 * logLength
   }
 
   # Scribner --------------------------------------------------------------
-  if (tolower(rule) == 'scribner') {
+  if (tolower(type) == 'scribner') {
     # TODO: give error when logLength > maximum scaling length
     out <- (0.79 * dia^2 - 2 * dia - 4) * (logLength / 16)
   }
 
   # International 1/4 in. -------------------------------------------------
-  if (tolower(rule) == 'international') {
+  if (tolower(type) == 'international') {
     out.4 <- 0.22 * dia^2 - 0.71 * dia
     out.8 <- 0.44 * dia^2 - 1.20 * dia - 0.30 
     out.12 <- 0.66 * dia^2 - 1.47 * dia - 0.79
