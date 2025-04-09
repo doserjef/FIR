@@ -1,2 +1,5 @@
 export(logRules)
 export(treeVolume)
+export(treeMerch)
+
+import(dplyr)
