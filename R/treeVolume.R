@@ -79,7 +79,7 @@ treeVolume <- function(dbh, mht, mht_units = 'log', gfc = 78, type, ...) {
     out <- vector(mode = 'numeric', length = length(dbh))
     doyleIndx <- which(tolower(type) == 'doyle')
     scribnerIndx <- which(tolower(type) == 'scribner')
-    intIndx <- which(tolower(type) == 'internationa')
+    intIndx <- which(tolower(type) == 'international')
     out[doyleIndx] <- (aDoyle + bDoyle + cDoyle)[doyleIndx] * gfc.cor[doyleIndx] 
     out[scribnerIndx] <- (aScribner + bScribner + cScribner)[scribnerIndx] * gfc.cor[scribnerIndx] 
     out[intIndx] <- (aInt + bInt + cInt) * gfc.cor[intIndx] 

@@ -1,5 +1,9 @@
 export(logRules)
 export(treeVolume)
 export(treeMerch)
+export(standStock)
 
 import(dplyr)
+import(rlang)
+import(tidyr)
+import(ggplot2)

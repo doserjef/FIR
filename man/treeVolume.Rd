@@ -35,7 +35,7 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
               Currently supported log rules are Doyle (\code{'doyle'}), 
               Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}). 
               For cubic foot volumes, use \code{'mesavage_cubic_ft'} to provide estimates from 
-              Mesavage (1947) GFC 78 volume table.
+              Mesavage (1947) GFC 78 volume table.}
 
   \item{...}{currently no additional arguments}
 

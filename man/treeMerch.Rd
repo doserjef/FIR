@@ -17,7 +17,7 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
   \item{data}{a data frame containing the individual tree measurements. Must be 
               a data frame with five columns: Product_Type (the specific product
               that the given tree corresponds to), Height (the merchantable height of
-              the tree in 16-ft logs or ft), Species, DBH, and GFC (Girard form class).  
+              the tree in 16-ft logs or ft), Species, DBH, and GFC (Girard form class).}  
 
   \item{pricing}{a data frame containing pricing information for the different products 
                  represented in the \code{data$Product_Type}. The number of rows in the 
