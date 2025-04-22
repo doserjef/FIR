@@ -36,12 +36,12 @@ standStock(treeData, plotID, variable, grpBy, plotType, plotSize,
   \item{plotType}{a quoted word indicating whether data were collected with fixed radius plots
                   (\code{plotType = 'fixed'}) or variable radius plots (\code{plotType = 'variable'}).}
 
-  \item{plotSize}{a numeric value indicating the size of the plots used when sampling was 
-                  done with fixed radius plots. This is only relevant when \code{plotType = 'fixed'}. 
+  \item{plotSize}{a quoted word indicating the column in \code{treeData} that contains the plot size
+                  on which the individual tree was measured. This is only relevant when \code{plotType = 'fixed'}. 
                   NOTE: the plot size should be provided in the area units that you want to use 
-                  for calculating per unit area values in the stand or stock table. For exampl, if you 
+                  for calculating per unit area values in the stand or stock table. For example, if you 
                   want estimates on a per acre basis, the plot size should be reported in acres. If the
-                  plot size is reported in square feet, the estimates in the stand and stock table will
+                  plot size is reported in square feet, the estimates will
                   be on a square foot basis (i.e., no conversions to acres will be done).}
 
   \item{BAF}{a numeric value indicating the basal area factor used for variable radius plots. This 

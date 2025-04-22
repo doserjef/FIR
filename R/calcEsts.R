@@ -1,6 +1,6 @@
 calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType, 
                      plotSize, BAF, baColumn, confIntLevel = 0.95, design = 'sys', 
-                     returnPlotSummaries = FALSE, ...) {
+                     returnPlotSummaries = FALSE, standID = NULL, ...) {
 
   # Some initial checks ---------------------------------------------------
   if (missing(treeData)) {
@@ -8,9 +8,6 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
   }
   if (missing(variable)) {
     stop('you need to specify the variable you want to estimate (variable)')
-  }
-  if (missing(grpBy)) {
-    stop('you need to specify the variable(s) to group the estimates by (grpBy)')
   }
   if (missing(plotID)) {
     stop('you need to specify the column in treeData that contains the plot/point ID (plotID)')
@@ -46,24 +43,30 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
   plotIDSyms <- rlang::sym(plotID)
   variableSyms <- rlang::sym(variable)
   grpBySyms <- rlang::syms(grpBy)
+  standIDSyms <- rlang::syms(standID)
   if (plotType == 'variable') {
     baColumnSyms <- rlang::sym(baColumn)
   } else {
     baColumnSyms <- NULL
   }
+  if (plotType == 'fixed') {
+    plotSizeSyms <- rlang::sym(plotSize)
+  } else {
+    plotSizeSyms <- NULL
+  }
   # Shrink the size of treeData for ease
   treeData <- treeData %>%
-    dplyr::select(!!plotIDSyms, !!variableSyms, !!!grpBySyms, !!baColumnSyms)
+    dplyr::select(!!plotIDSyms, !!variableSyms, !!!grpBySyms, !!baColumnSyms, !!plotSizeSyms, !!!standIDSyms)
 
   # Complete the tree-level data
   treeData <- treeData %>%
-    tidyr::complete(!!plotIDSyms, !!!grpBySyms) %>%
-    dplyr::mutate(dplyr::across(c(!!variableSyms, !!baColumnSyms), function(a) ifelse(is.na(a), 0, a)))
+    tidyr::complete(tidyr::nesting(!!plotIDSyms, !!!standIDSyms), !!!grpBySyms) %>%
+    dplyr::mutate(dplyr::across(c(!!variableSyms, !!baColumnSyms, !!plotSizeSyms), function(a) ifelse(is.na(a), 0, a)))
 
   # Calculate the expansion factors
   if (plotType == 'fixed') {
     treeData <- treeData %>%
-      dplyr::mutate(TF = 1 / plotSize) 
+      dplyr::mutate(TF = ifelse(!!plotSizeSyms > 0, 1 / !!plotSizeSyms, 0)) 
   } else {
     treeData <- treeData %>%
       dplyr::mutate(TF = ifelse(!!baColumnSyms > 0, BAF / !!baColumnSyms, 0))
@@ -71,13 +74,13 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
 
   # Calculate point/plot level data ---------------------------------------
   plotData <- treeData %>%
-    dplyr::group_by(!!plotIDSyms, !!!grpBySyms) %>%
+    dplyr::group_by(!!plotIDSyms, !!!standIDSyms, !!!grpBySyms) %>%
     dplyr::summarize(variable = sum(!!variableSyms * TF), .groups = 'drop')
 
   # Stand-level estimates -------------------------------------------------
   alpha <- 1 - confIntLevel
   ests <- plotData %>%
-    dplyr::group_by(!!!grpBySyms) %>%
+    dplyr::group_by(!!!standIDSyms, !!!grpBySyms) %>%
     dplyr::summarize(n = n(), 
                      t = qt(p = 1 - alpha / 2, df = n - 1), 
                      estimate = mean(variable),

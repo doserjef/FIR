@@ -40,19 +40,24 @@ standStock <- function(treeData, plotID, variable, grpBy, plotType,
   } else {
     baColumnSyms <- NULL
   }
+  if (plotType == 'fixed') {
+    plotSizeSyms <- rlang::sym(plotSize)
+  } else {
+    plotSizeSyms <- NULL
+  }
   # Shrink the size of treeData for ease
   treeData <- treeData %>%
-    dplyr::select(!!plotIDSyms, !!variableSyms, !!!grpBySyms, !!baColumnSyms)
+    dplyr::select(!!plotIDSyms, !!variableSyms, !!!grpBySyms, !!baColumnSyms, !!plotSizeSyms)
 
   # Complete the tree-level data
   treeData <- treeData %>%
     tidyr::complete(!!plotIDSyms, !!!grpBySyms) %>%
-    dplyr::mutate(dplyr::across(c(!!variableSyms, !!baColumnSyms), function(a) ifelse(is.na(a), 0, a)))
+    dplyr::mutate(dplyr::across(c(!!variableSyms, !!baColumnSyms, !!plotSizeSyms), function(a) ifelse(is.na(a), 0, a)))
 
   # Calculate the expansion factors
   if (plotType == 'fixed') {
     treeData <- treeData %>%
-      dplyr::mutate(TF = 1 / plotSize) 
+      dplyr::mutate(TF = ifelse(!!plotSizeSyms > 0, 1 / !!plotSizeSyms, 0)) 
   } else {
     treeData <- treeData %>%
       dplyr::mutate(TF = ifelse(!!baColumnSyms > 0, BAF / !!baColumnSyms, 0))
