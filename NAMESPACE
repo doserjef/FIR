@@ -2,8 +2,11 @@ export(logRules)
 export(treeVolume)
 export(treeMerch)
 export(standStock)
+export(calcEsts)
 
 import(dplyr)
 import(rlang)
 import(tidyr)
 import(ggplot2)
+
+importFrom("stats", "qt", "sd")
