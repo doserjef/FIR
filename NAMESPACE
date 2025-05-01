@@ -3,6 +3,7 @@ export(treeVolume)
 export(treeMerch)
 export(standStock)
 export(calcEsts)
+export(importanceValue)
 
 import(dplyr)
 import(rlang)
