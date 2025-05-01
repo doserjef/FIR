@@ -6,11 +6,9 @@ treeMerch <- function(data, pricing, mht_units = 'log', dbh_units = 'in', ...) {
   if (!is.data.frame(data)) {
     stop('data must be specified as a data frame containing the individual tree measurements')
   }
-  if (ncol(data) != 5) {
-    stop('data must be a data frame with five columns: Product_Type, Height, Species, DBH, GFC')
-  }
-  if (!all.equal(sort(colnames(data)), sort(c('Product_Type', 'Height', 'Species', 'DBH', 'GFC')))) {
-    stop('the column names in data must be: Product_Type, Height, Species, DBH, GFC')
+  tmp.names <- c('Product_Type', 'Height', 'Species', 'DBH', 'GFC')
+  if (sum(tmp.names %in% colnames(data)) != length(tmp.names)) {
+    stop('treeData must contain the following columns: Product_Type, Height, Species, DBH, GFC')
   }
   if (missing(pricing)) {
     stop('pricing must be provided')
@@ -41,8 +39,8 @@ treeMerch <- function(data, pricing, mht_units = 'log', dbh_units = 'in', ...) {
   
   # Determine price for each tree -----------------------------------------
   out <- comb_dat %>%
-    dplyr::mutate(Value = round(Price * Volume, digits = 2)) %>%
-    dplyr::select(Product_Type, Height, Species, DBH, Vol_Type, Value_USD = Value)
+    dplyr::mutate(Value_USD = round(Price * Volume, digits = 2)) %>%
+    dplyr::select(-Price)
 
   out
 }
