@@ -7,7 +7,7 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
 }
 
 \description{
-  Function for computing monetary value (in USD) for individual trees given a set 
+  Function for computing monetary value for individual trees given a set 
   of DBH and merchantable height measurements, as well as timber price information 
   for the different products represented in the measurements.
 }
@@ -16,9 +16,9 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
 
   \item{data}{a data frame containing the individual tree measurements. Must be 
               a data frame with at least the following five columns: 
-              Product_Type (the specific product that the given tree corresponds to), 
-              Height (the merchantable height of the tree in 16-ft logs or ft), 
-              Species, DBH, and GFC (Girard form class).}  
+              \code{'Product_Type'} (the specific product that the given tree corresponds to), 
+              \code{'Height'} (the merchantable height of the tree in 16-ft logs or ft), 
+              \code{'Species'}, \code{'DBH'}, and \code{'GFC'} (Girard form class).}  
 
   \item{pricing}{a data frame containing pricing information for the different products 
                  represented in the \code{data$Product_Type}. The number of rows in the 
@@ -48,8 +48,8 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
 
 \value{
   A data frame of the same form as \code{data} with two additional columns 
-  indicating the volume type (\code{'Vol_Type'}) and value of the tree in USD 
-  (\code{'Value_USD'}). 
+  indicating the volume type (\code{'Vol_Type'}) and value of the tree in 
+  whatever currency is specified in the \code{pricing} data frame (\code{'Value'}). 
 }
 
 \examples{

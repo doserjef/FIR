@@ -26,7 +26,7 @@ importanceValue(treeData, plotID, baColumn, species, standID, ...)
                 of the plot on which each individual tree was measured.}
 
   \item{baColumn}{a quoted name of the column in \code{treeData} that contains the basal 
-                  area for each individual tree. This is only required when \code{plotType = 'variable'}.}
+                  area for each individual tree.}
 
   \item{species}{a quoted name of the column in \code{treeData} that contains the species
                  ID for each individual tree.}

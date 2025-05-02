@@ -39,7 +39,7 @@ treeMerch <- function(data, pricing, mht_units = 'log', dbh_units = 'in', ...) {
   
   # Determine price for each tree -----------------------------------------
   out <- comb_dat %>%
-    dplyr::mutate(Value_USD = round(Price * Volume, digits = 2)) %>%
+    dplyr::mutate(Value = round(Price * Volume, digits = 2)) %>%
     dplyr::select(-Price)
 
   out

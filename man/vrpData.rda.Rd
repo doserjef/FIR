@@ -27,6 +27,8 @@ data(vrpData)
   \code{Height_log}: merchantable height measured as the number of 16-ft logs (to the nearest half log).
 
   \code{DIA_Class}: 4-inch diameter class the given tree falls into. 
+
+  \code{BA_sq_ft}: basal area in square feet of each tree.
   
   \code{TreeNum}: the number of trees represented by each row. In this case, each row is a single tree, so this is just 1. 
 }

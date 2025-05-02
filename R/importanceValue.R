@@ -27,7 +27,7 @@ importanceValue <- function(treeData, plotID, baColumn, species,
     dplyr::select(!!plotIDSyms, !!!standIDSyms) %>%
     dplyr::summarize(n.plots = dplyr::n_distinct(!!plotIDSyms))
 
-  frequency <- pef_dat %>%
+  frequency <- treeData %>%
     dplyr::group_by(!!speciesSyms, !!plotIDSyms, !!!standIDSyms) %>%
     dplyr::summarize(pa = ifelse(dplyr::n() > 0, 1, 0), .groups = 'drop') %>%
     tidyr::complete(!!speciesSyms, !!!standIDSyms, fill = list(pa = 0)) %>%
@@ -44,7 +44,7 @@ importanceValue <- function(treeData, plotID, baColumn, species,
     dplyr::mutate(frequency = frequency / n.plots) %>%
     dplyr::select(-n.plots)
 
-  abundance <- pef_dat %>%
+  abundance <- treeData %>%
     dplyr::group_by(!!speciesSyms, !!!standIDSyms) %>%
     dplyr::summarize(abundance = dplyr::n(), 
                      dominance = sum(!!baColumnSyms), .groups = 'drop') %>%

@@ -4,8 +4,8 @@
 
 \usage{
 calcEsts(treeData, plotID, variable, grpBy = NULL, plotType, plotSize, 
-           BAF, baColumn, confIntLevel = 0.95, design = 'sys', 
-           returnPlotSummaries = FALSE, standID = NULL, ...)
+         BAF, baColumn, confLevel = 0.95, design = 'sys', 
+         returnPlotSummaries = FALSE, standID = NULL, ...)
 }
 
 \description{
@@ -51,11 +51,13 @@ calcEsts(treeData, plotID, variable, grpBy = NULL, plotType, plotSize,
   \item{baColumn}{a quoted name of the column in \code{treeData} that contains the basal 
                   area for each individual tree. This is only required when \code{plotType = 'variable'}.}
 
-  \item{confIntLevel}{the confidence level to use in confidence interval calculations. Default is 0.95 for a 95\% confidence interval.}
+  \item{confLevel}{the confidence level to use in confidence interval calculations. Default is 0.95 for a 95\% confidence interval.}
 
   \item{design}{the sampling design used. Currently only supports a systematic (\code{'sys'}) or simple random sampling without replacement (\code{srswor}) design.}
 
-  \item{returnPlotSummaries}{a logical value taking value }
+  \item{returnPlotSummaries}{a logical value. If \code{TRUE}, the function will return a list containing
+                             the stand level estimates as well as the plot-level summaries. If \code{FALSE}, 
+                             only the stand-level estimates will be returned.}
 
   \item{standID}{a quoted name of a column in \code{treeData} that contains the stand 
                  ID. If this is specified, estimates will be provided separately 
@@ -75,19 +77,19 @@ calcEsts(treeData, plotID, variable, grpBy = NULL, plotType, plotSize,
   A data frame (tibble) where the rows correspond to the different groups for which estimates are obtained
   and the columns correspond to different components of the estimate. Columns included in the data frame are: 
 
-  \item{n}{: the number of plots/points used to generate the estimate.}
+  \item{n}{ the number of plots/points used to generate the estimate.}
 
-  \item{t}{: the t-value used in the confidence interval calculation.}
+  \item{t}{ the t-value used in the confidence interval calculation.}
 
-  \item{estimate}{: the estimate of the variable of interest on a per unit area basis.}
+  \item{estimate}{ the estimate of the variable of interest on a per unit area basis.}
 
-  \item{standardError}{: the standard error of the estimate.}
+  \item{standardError}{ the standard error of the estimate.}
 
-  \item{ciLower}{: the lower bound of the confidence interval for the estimate.}
+  \item{ciLower}{ the lower bound of the confidence interval for the estimate.}
 
-  \item{ciUpper}{: the upper bound of the confidence interval for the estimate.} 
+  \item{ciUpper}{ the upper bound of the confidence interval for the estimate.} 
 
-  \item{ciLevel}{: the confidence level used to construct the confidence interval.}
+  \item{ciLevel}{ the confidence level used to construct the confidence interval.}
 
   If \code{returnPlotSummaries = TRUE}, a list is returned instead of a data frame. The 
   list consists of two data frames, one containing point/plot level estimates and the 
@@ -106,6 +108,6 @@ vrpData
 # and four diameter classes.
 calcEsts(treeData = vrpData, plotID = 'PointID', variable = 'TreeNum', 
            grpBy = c('DIA_Class'), plotType = 'variable', 
-           BAF = 10, baColumn = 'BA_sq_ft', confIntLevel = 0.95)
+           BAF = 10, baColumn = 'BA_sq_ft', confLevel = 0.95)
 }
 

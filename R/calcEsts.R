@@ -1,5 +1,5 @@
 calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType, 
-                     plotSize, BAF, baColumn, confIntLevel = 0.95, design = 'sys', 
+                     plotSize, BAF, baColumn, confLevel = 0.95, design = 'sys', 
                      returnPlotSummaries = FALSE, standID = NULL, ...) {
 
   # Some initial checks ---------------------------------------------------
@@ -34,8 +34,8 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
   if (!is.logical(returnPlotSummaries)) {
     stop('returnPlotSummaries must be either TRUE or FALSE.')
   }
-  if (confIntLevel <= 0 | confIntLevel >= 1) {
-    stop('confIntLevel must be a numeric value between 0 and 1')
+  if (confLevel <= 0 | confLevel >= 1) {
+    stop('confLevel must be a numeric value between 0 and 1')
   }
 
   # Prep the data for summarizing -----------------------------------------
@@ -78,7 +78,7 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
     dplyr::summarize(variable = sum(!!variableSyms * TF), .groups = 'drop')
 
   # Stand-level estimates -------------------------------------------------
-  alpha <- 1 - confIntLevel
+  alpha <- 1 - confLevel
   ests <- plotData %>%
     dplyr::group_by(!!!standIDSyms, !!!grpBySyms) %>%
     dplyr::summarize(n = n(), 
@@ -87,7 +87,7 @@ calcEsts <- function(treeData, plotID, variable, grpBy = NULL, plotType,
                      standardError = sd(variable) / sqrt(n), 
                      ciLower = estimate - t * standardError, 
                      ciUpper = estimate + t * standardError, 
-                     ciLevel = confIntLevel,
+                     ciLevel = confLevel,
                      .groups = 'drop')
 
   out <- ests

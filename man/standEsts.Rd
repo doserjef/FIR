@@ -18,6 +18,9 @@ standEsts(plotData, variable, grpBy = NULL, confLevel = 0.95,
   comparison to \code{calcEsts}, \code{standEsts} can be used to generate 
   estimates of means and confidence intervals for variables that are measured 
   at the plot-level and not for each individual tree (e.g., dominant height). 
+  Note that \code{standEsts} does not do any sort of expansion, it assumes that 
+  the plot-level data are already expanded to the per unit area basis or that 
+  they do not need to be expanded.
 }
 
 \arguments{
@@ -56,23 +59,28 @@ standEsts(plotData, variable, grpBy = NULL, confLevel = 0.95,
   A data frame (tibble) where the rows correspond to the different groups for which estimates are obtained
   and the columns correspond to different components of the estimate. Columns included in the data frame are: 
 
-  \item{n}{: the number of plots/points used to generate the estimate.}
+  \item{n}{ the number of plots/points used to generate the estimate.}
 
-  \item{t}{: the t-value used in the confidence interval calculation.}
+  \item{t}{ the t-value used in the confidence interval calculation.}
 
-  \item{estimate}{: the estimate of the variable of interest on a per unit area basis.}
+  \item{estimate}{ the estimate of the variable of interest on a per unit area basis.}
 
-  \item{standardError}{: the standard error of the estimate.}
+  \item{standardError}{ the standard error of the estimate.}
 
-  \item{ciLower}{: the lower bound of the confidence interval for the estimate.}
+  \item{ciLower}{ the lower bound of the confidence interval for the estimate.}
 
-  \item{ciUpper}{: the upper bound of the confidence interval for the estimate.} 
+  \item{ciUpper}{ the upper bound of the confidence interval for the estimate.} 
 
-  \item{ciLevel}{: the confidence level used to construct the confidence interval.}
+  \item{ciLevel}{ the confidence level used to construct the confidence interval.}
 
 }
 
 \examples{
-# Will be updated with an example... 
+ex_plot_data <- data.frame(plotID = c(1, 2, 3, 4, 5, 6, 7, 8), 
+                           domHeight = c(50, 57, 56, 45, 68, 78, 52, 66))
+
+standEsts(plotData = ex_plot_data, variable = 'domHeight', confLevel = 0.90)
+
+
 }
 
