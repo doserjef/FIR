@@ -86,7 +86,8 @@ treeVolume <- function(dbh, mht, mht_units = 'log', gfc = 78, type, ...) {
   } else {
     # Round heights to the nearest half foot if they aren't already
     mht <- trunc(mht / .5) * .5
-    tmp.dat <- data.frame(DBH = dbh, Height = mht)                           
+    # Notice you're truncating diameters to the nearest integer.
+    tmp.dat <- data.frame(DBH = trunc(dbh), Height = mht)                           
     final.dat <- dplyr::left_join(tmp.dat, mesavageCubicFt, by = c('DBH', 'Height'))
     out <- final.dat$Volume
   }
