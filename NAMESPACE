@@ -4,6 +4,7 @@ export(treeMerch)
 export(standStock)
 export(calcEsts)
 export(importanceValue)
+export(standEsts)
 
 import(dplyr)
 import(rlang)

@@ -1,6 +1,6 @@
 \name{calcEsts}
 \alias{calcEsts}
-\title{Calculate estimates and confidence intervals of forest variables per unit area}
+\title{Calculate estimates and confidence intervals of forest variables per unit area from tree-level data}
 
 \usage{
 calcEsts(treeData, plotID, variable, grpBy = NULL, plotType, plotSize, 
