@@ -1,7 +1,7 @@
 Package: FIR 
 Type: Package
 Title: Simple Functions for Forest Inventory Data in R 
-Version: 0.0.1 
+Version: 0.0.2
 Authors@R: c(person("Jeffrey", "Doser", role=c("aut", "cre"), email="jwdoser@ncsu.edu"))
 Author: Jeffrey Doser [aut, cre]
 Maintainer: Jeffrey Doser <jwdoser@ncsu.edu>
