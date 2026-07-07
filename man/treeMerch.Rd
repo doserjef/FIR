@@ -25,11 +25,13 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
                  data frame should be equal to the total number of product types. The 
                  data frame must contain three columns: \code{"Product_Type"}, \code{"Price"},
                  and \code{"Vol_Type"} (the log rule or volume estimation approach). The 
-                 price should be in the same units as the volume estimation approach. For 
-                 example, if \code{Vol_Type = 'Scribner'}, \code{Price} should indicate the 
-                 price in USD per Scribner board foot. Valid \code{Vol_Type} are 
-                 "scribner", "doyle", "international" (international 1/4 inch), and 
-                 "mesavage_cubic_ft".}
+                 price should be in the same units as the volume estimation approach. For
+                 example, if \code{Vol_Type = 'Scribner'}, \code{Price} should indicate the
+                 price in USD per Scribner board foot. Valid \code{Vol_Type} are
+                 "scribner", "doyle", "international" (international 1/4 inch),
+                 "mesavage_cubic_ft", and "huber". Different product types may use
+                 different volume methods, including a mix of board foot and cubic foot
+                 approaches.}
 
   \item{mht_units}{the units of the merchantable height measurements. Current options
                    include 16-ft logs (\code{'log'}) or feet (\code{'ft'}). Default is
@@ -47,9 +49,11 @@ treeMerch(data, pricing, mht_units = 'log', dbh_units = 'in', ...)
 }
 
 \value{
-  A data frame of the same form as \code{data} with two additional columns 
-  indicating the volume type (\code{'Vol_Type'}) and value of the tree in 
-  whatever currency is specified in the \code{pricing} data frame (\code{'Value'}). 
+  A data frame of the same form as \code{data} with three additional columns:
+  the volume type (\code{'Vol_Type'}), the volume units (\code{'Vol_Units'},
+  either \code{'board_ft'} or \code{'cubic_ft'}), and the monetary value of
+  the tree in whatever currency is specified in the \code{pricing} data frame
+  (\code{'Value'}).
 }
 
 \examples{
