@@ -32,11 +32,13 @@ treeMerch <- function(data, pricing, mht_units = 'log', dbh_units = 'in', ...) {
   # Join data -------------------------------------------------------------
   comb_dat <- dplyr::left_join(data, pricing, by = 'Product_Type')
 
-  # Determine board foot volume of tree -----------------------------------
-  comb_dat$Volume <- treeVolume(dbh = comb_dat$DBH, mht = comb_dat$Height, 
-                                mht_units = mht_units, gfc = comb_dat$GFC, 
-                                type = comb_dat$Vol_Type) 
-  
+  # Determine volume of tree ----------------------------------------------
+  vol_result <- treeVolume(dbh = comb_dat$DBH, mht = comb_dat$Height,
+                           mht_units = mht_units, gfc = comb_dat$GFC,
+                           type = comb_dat$Vol_Type)
+  comb_dat$Volume <- vol_result$volume
+  comb_dat$Vol_Units <- vol_result$units
+
   # Determine price for each tree -----------------------------------------
   out <- comb_dat %>%
     dplyr::mutate(Value = round(Price * Volume, digits = 2)) %>%

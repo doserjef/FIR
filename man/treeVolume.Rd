@@ -11,7 +11,9 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
   implement the equations published by Wiant Jr. (1986) and are approximations to the original
   tables published by Mesavage and Girard (1946). Cubic foot estimates are available either from
   the original tables of Mesavage (1947) or via Huber's Formula, which computes volume as the
-  product of the tree's basal area (sq ft) and merchantable height (ft).
+  product of the tree's basal area (sq ft) and merchantable height (ft). Board foot and cubic
+  foot volume types can be mixed within a single call, with the units of each tree indicated in
+  the returned data frame.
 }
 
 \arguments{
@@ -36,8 +38,10 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
               Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}).
               For cubic foot volumes, use \code{'mesavage_cubic_ft'} for estimates from the
               Mesavage (1947) GFC 78 volume table, or \code{'huber'} to apply Huber's Formula
-              (basal area in sq ft multiplied by merchantable height in ft). Board foot and
-              cubic foot types cannot be mixed within a single call.}
+              (basal area in sq ft multiplied by merchantable height in ft). Can be a single
+              value applied to all trees or a vector of length \code{length(dbh)} assigning a
+              different type to each tree. Board foot and cubic foot types may be mixed freely
+              within a single call.}
 
   \item{...}{currently no additional arguments}
 
@@ -64,7 +68,9 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
 }
 
 \value{
-  A numeric vector containing the board foot or cubic foot volumes of the standing trees.
+  A data frame with one row per tree and three columns: \code{volume} (the estimated volume),
+  \code{units} (either \code{'board_ft'} or \code{'cubic_ft'}), and \code{type} (the log rule
+  or volume formula used for that tree).
 }
 
 \examples{
@@ -74,5 +80,7 @@ mht_log <- c(1.5, 3, 2.5, 4)
 treeVolume(dbh = dbh, mht = mht_log, type = 'international')
 # Cubic foot volume using Huber's Formula
 treeVolume(dbh = dbh, mht = mht_log, type = 'huber')
+# Mixed: first two trees in board feet (Doyle), last two in cubic feet (Huber)
+treeVolume(dbh = dbh, mht = mht_log, type = c('doyle', 'doyle', 'huber', 'huber'))
 }
 
