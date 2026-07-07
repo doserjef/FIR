@@ -7,11 +7,11 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
 }
 
 \description{
-  Function for computing board foot or cubic foot volumes for standing trees based on the volume 
-  tables published by Mesavage and Girard (1946). Note that the board foot volumes produced 
-  from this function implement the equations published by Wiant Jr. (1986) and thus
-  are approximations to the original tables published by Mesavage and Girard (1946). The cubic
-  foot estimates are based on the original tables of Mesavage (1947).
+  Function for computing board foot or cubic foot volumes for standing trees. Board foot volumes
+  implement the equations published by Wiant Jr. (1986) and are approximations to the original
+  tables published by Mesavage and Girard (1946). Cubic foot estimates are available either from
+  the original tables of Mesavage (1947) or via Huber's Formula, which computes volume as the
+  product of the tree's basal area (sq ft) and merchantable height (ft).
 }
 
 \arguments{
@@ -31,11 +31,13 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
              This can be a vector with a separate value for each tree, or a single value 
              if the same Girard form class is applied to all trees.}
 
-  \item{type}{the name of the log rule or volume table to use for estimating volume. 
-              Currently supported log rules are Doyle (\code{'doyle'}), 
-              Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}). 
-              For cubic foot volumes, use \code{'mesavage_cubic_ft'} to provide estimates from 
-              Mesavage (1947) GFC 78 volume table.}
+  \item{type}{the name of the log rule or volume formula to use for estimating volume.
+              Currently supported board foot log rules are Doyle (\code{'doyle'}),
+              Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}).
+              For cubic foot volumes, use \code{'mesavage_cubic_ft'} for estimates from the
+              Mesavage (1947) GFC 78 volume table, or \code{'huber'} to apply Huber's Formula
+              (basal area in sq ft multiplied by merchantable height in ft). Board foot and
+              cubic foot types cannot be mixed within a single call.}
 
   \item{...}{currently no additional arguments}
 
@@ -62,12 +64,15 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
 }
 
 \value{
-  A numeric vector containing the board foot volumes of the standing trees. 
+  A numeric vector containing the board foot or cubic foot volumes of the standing trees.
 }
 
 \examples{
 dbh <- c(10, 20, 18, 34)
-mht_log <- c(1.5, 3, 2.5, 4) 
-treeVolume(dbh = dbh, mht = mht_log, type = 'international') 
+mht_log <- c(1.5, 3, 2.5, 4)
+# Board foot volume using the International 1/4 inch log rule
+treeVolume(dbh = dbh, mht = mht_log, type = 'international')
+# Cubic foot volume using Huber's Formula
+treeVolume(dbh = dbh, mht = mht_log, type = 'huber')
 }
 

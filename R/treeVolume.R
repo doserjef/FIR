@@ -30,19 +30,21 @@ treeVolume <- function(dbh, mht, mht_units = 'log', gfc = 78, type, ...) {
   if (length(gfc) == 1) {
     gfc <- rep(gfc, length(dbh))
   }
-  if (any(!(unique(tolower(type)) %in% c('international', 'doyle', 'scribner', 
-                                         'mesavage_cubic_ft')))) {
-    stop('type must be one of the following: "international", "doyle", "scribner", "mesavage_cubic_ft"') 
+  if (any(!(unique(tolower(type)) %in% c('international', 'doyle', 'scribner',
+                                         'mesavage_cubic_ft', 'huber')))) {
+    stop('type must be one of the following: "international", "doyle", "scribner", "mesavage_cubic_ft", "huber"')
   }
-  # If using the cubic ft formulas, all values in type must be cubic ft. 
-  if (('mesavage_cubic_ft' %in% unique(tolower(type))) & (length(tolower(unique(type))) > 1)) {
-    stop('If generating volumes using the Mesavage cubic foot volumes, all tree volumes must be calculated in cubic ft. You are not allowed to mix board ft log rules and cubic ft log rules.')
+  # Cannot mix board ft log rules with cubic ft volume types.
+  cubic_types <- c('mesavage_cubic_ft', 'huber')
+  board_types <- c('international', 'doyle', 'scribner')
+  if (any(unique(tolower(type)) %in% cubic_types) & any(unique(tolower(type)) %in% board_types)) {
+    stop('You cannot mix cubic foot volume types (Mesavage, Huber) with board foot log rules.')
   }
   # Get an indicator value indicating if doing log rule table or cubic ft.
-  if ('mesavage_cubic_ft' %in% unique(tolower(type))) {
-    bdFt <- FALSE
+  if (any(unique(tolower(type)) %in% cubic_types)) {
+    bd_ft <- FALSE
   } else {
-    bdFt <- TRUE
+    bd_ft <- TRUE
   }
   # TODO: check for specifying Mesavage and gfc
   if (length(type) != length(dbh) & length(type) != 1) {
@@ -56,40 +58,51 @@ treeVolume <- function(dbh, mht, mht_units = 'log', gfc = 78, type, ...) {
   if (length(type) == 1) {
     type <- rep(type, length(dbh))
   }
-  
+
   # Set up ----------------------------------------------------------------
   if (mht_units %in% c('ft', 'feet')) {
     message('mht provided in feet. Converting the heights to 16-ft logs, rounding down to the nearest half log. These values are used for volume calculation')
     mht <- trunc(mht / 16 / .5) * .5
   }
-  
+
   # Make the calculations -------------------------------------------------
-  # Correction factor for different GFCs. 
-  if (bdFt) {
-    gfc.cor <- 1.0 + ((gfc - 78) * 0.03) 
-    aDoyle <- -29.37337 + 41.51275 * mht + 0.55743 * mht^2
-    bDoyle <- (2.78043 - 8.77272 * mht - 0.04516 * mht^2) * dbh 
-    cDoyle <- (0.04177 + 0.59042 * mht - 0.01578 * mht^2) * dbh^2
-    aScribner <- -22.50365 + 17.53508 * mht - 0.59242 * mht^2
-    bScribner <- (3.02988 - 4.34381 * mht - 0.02302 * mht^2) * dbh
-    cScribner <- (-0.01969 + 0.51593 * mht - 0.02035 * mht^2) * dbh^2
-    aInt <- -13.35212 + 9.58615 * mht + 1.52968 * mht^2
-    bInt <- (1.7962 - 2.59995 * mht - 0.27465 * mht^2) * dbh
-    cInt <- (0.04482 + 0.45997 * mht - 0.00961 * mht^2) * dbh^2
+  # Correction factor for different GFCs.
+  if (bd_ft) {
+    gfc_cor <- 1.0 + ((gfc - 78) * 0.03)
+    a_doyle <- -29.37337 + 41.51275 * mht + 0.55743 * mht^2
+    b_doyle <- (2.78043 - 8.77272 * mht - 0.04516 * mht^2) * dbh
+    c_doyle <- (0.04177 + 0.59042 * mht - 0.01578 * mht^2) * dbh^2
+    a_scribner <- -22.50365 + 17.53508 * mht - 0.59242 * mht^2
+    b_scribner <- (3.02988 - 4.34381 * mht - 0.02302 * mht^2) * dbh
+    c_scribner <- (-0.01969 + 0.51593 * mht - 0.02035 * mht^2) * dbh^2
+    a_int <- -13.35212 + 9.58615 * mht + 1.52968 * mht^2
+    b_int <- (1.7962 - 2.59995 * mht - 0.27465 * mht^2) * dbh
+    c_int <- (0.04482 + 0.45997 * mht - 0.00961 * mht^2) * dbh^2
     out <- vector(mode = 'numeric', length = length(dbh))
-    doyleIndx <- which(tolower(type) == 'doyle')
-    scribnerIndx <- which(tolower(type) == 'scribner')
-    intIndx <- which(tolower(type) == 'international')
-    out[doyleIndx] <- (aDoyle + bDoyle + cDoyle)[doyleIndx] * gfc.cor[doyleIndx] 
-    out[scribnerIndx] <- (aScribner + bScribner + cScribner)[scribnerIndx] * gfc.cor[scribnerIndx] 
-    out[intIndx] <- (aInt + bInt + cInt) * gfc.cor[intIndx] 
+    doyle_indx <- which(tolower(type) == 'doyle')
+    scribner_indx <- which(tolower(type) == 'scribner')
+    int_indx <- which(tolower(type) == 'international')
+    out[doyle_indx] <- (a_doyle + b_doyle + c_doyle)[doyle_indx] * gfc_cor[doyle_indx]
+    out[scribner_indx] <- (a_scribner + b_scribner + c_scribner)[scribner_indx] * gfc_cor[scribner_indx]
+    out[int_indx] <- (a_int + b_int + c_int) * gfc_cor[int_indx]
   } else {
-    # Round heights to the nearest half foot if they aren't already
-    mht <- trunc(mht / .5) * .5
-    # Notice you're truncating diameters to the nearest integer.
-    tmp.dat <- data.frame(DBH = trunc(dbh), Height = mht)                           
-    final.dat <- dplyr::left_join(tmp.dat, mesavageCubicFt, by = c('DBH', 'Height'))
-    out <- final.dat$Volume
+    mesavage_indx <- which(tolower(type) == 'mesavage_cubic_ft')
+    huber_indx <- which(tolower(type) == 'huber')
+    out <- vector(mode = 'numeric', length = length(dbh))
+
+    if (length(mesavage_indx) > 0) {
+      mht_mesavage <- trunc(mht / .5) * .5
+      # Notice you're truncating diameters to the nearest integer.
+      tmp_dat <- data.frame(DBH = trunc(dbh[mesavage_indx]), Height = mht_mesavage[mesavage_indx])
+      final_dat <- dplyr::left_join(tmp_dat, mesavageCubicFt, by = c('DBH', 'Height'))
+      out[mesavage_indx] <- final_dat$Volume
+    }
+
+    if (length(huber_indx) > 0) {
+      mht_ft <- mht[huber_indx] * 16
+      ba_sqft <- (pi / 4) * (dbh[huber_indx] / 12)^2
+      out[huber_indx] <- ba_sqft * mht_ft
+    }
   }
   out
 }
