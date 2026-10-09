@@ -26,22 +26,22 @@ standEsts(plotData, variable, grpBy = NULL, confLevel = 0.95,
 \arguments{
 
   \item{plotData}{a data frame consisting of plot-level measurements. The rows correspond
-                  to plots and the columns correspond to different variables. }
+                  to plots and the columns correspond to different variables. Column names supplied
+                  to the other arguments must be given unquoted (e.g., \code{variable = domHeight}).}
 
-  \item{variable}{a quoted name of the variable that will be estimated.  
-                  The name of the variable must match a column in \code{plotData}.}
+  \item{variable}{the unquoted name of the column in \code{plotData} that will be estimated.}
 
-  \item{grpBy}{quoted names of the variable(s) that will be used to group estimates by. 
-               Users can estimate the \code{variable} by multiple different groups if desired 
-               (e.g., diameter class, species). The names must correspond to columns in \code{plotData}. 
-               Note that if \code{grpBy} is not specified, then estimates will be calculated across
+  \item{grpBy}{the unquoted name(s) of the column(s) in \code{plotData} that will be used to
+               group estimates by. Users can estimate the \code{variable} by a single group
+               (e.g., \code{grpBy = DIA_Class}) or by multiple groups combined with \code{c()}
+               (e.g., \code{grpBy = c(Species, DIA_Class)}). Note that if \code{grpBy} is not specified, then estimates will be calculated across
                the entire data set.}
 
   \item{confLevel}{the confidence level to use in confidence interval calculations. Default is 0.95 for a 95\% confidence interval.}
 
   \item{design}{the sampling design used. Currently only supports a systematic (\code{'sys'}) or simple random sampling without replacement (\code{srswor}) design.}
 
-  \item{standID}{a quoted name of a column in \code{plotData} that contains the stand 
+  \item{standID}{the unquoted name of a column in \code{plotData} that contains the stand 
                  ID. If this is specified, estimates will be provided separately 
                  for each stand in the data set. Note this doesn't necessarily need to 
                  correspond to stands, but could indicate some other form of geographical
@@ -79,7 +79,7 @@ standEsts(plotData, variable, grpBy = NULL, confLevel = 0.95,
 ex_plot_data <- data.frame(plotID = c(1, 2, 3, 4, 5, 6, 7, 8), 
                            domHeight = c(50, 57, 56, 45, 68, 78, 52, 66))
 
-standEsts(plotData = ex_plot_data, variable = 'domHeight', confLevel = 0.90)
+standEsts(plotData = ex_plot_data, variable = domHeight, confLevel = 0.90)
 
 
 }

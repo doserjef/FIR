@@ -19,24 +19,25 @@ standStock(treeData, plotID, variable, grpBy, plotType, plotSize,
 
   \item{treeData}{a data frame consisting of individual tree measurements. The rows correspond
                   to individual trees and the columns correspond to different measurements and/or 
-                  information on the tree. }
+                  information on the tree. Column names supplied to the other arguments must be
+                  given unquoted (e.g., \code{plotID = PointID}).}
 
-  \item{plotID}{a quoted name of the column in \code{treeData} that contains the ID
+  \item{plotID}{the unquoted name of the column in \code{treeData} that contains the ID
                 of the plot on which each individual tree was measured.}
 
-  \item{variable}{a quoted name of the variable that will be summarized into tabular format. 
-                  This will determine whether the resulting table is a stand or stock table. 
-                  The name of the variable must match a column in \code{treeData}.}
+  \item{variable}{the unquoted name of the column in \code{treeData} that will be summarized
+                  into tabular format. This will determine whether the resulting table is a
+                  stand or stock table.}
 
-  \item{grpBy}{either one or two quoted names of the variable(s) that will be used to form 
-               the groups of the stand or stock table. Users can summarize the \code{variable} by 
-               one group (e.g., diameter class) or two groups (e.g., diameter class and species). 
-               The names must correspond to columns in \code{treeData}.}
+  \item{grpBy}{the unquoted name(s) of either one or two columns in \code{treeData} that will
+               be used to form the groups of the stand or stock table. Users can summarize the
+               \code{variable} by one group (e.g., \code{grpBy = DIA_Class}) or two groups combined
+               with \code{c()} (e.g., \code{grpBy = c(Species, DIA_Class)}).}
 
   \item{plotType}{a quoted word indicating whether data were collected with fixed radius plots
                   (\code{plotType = 'fixed'}) or variable radius plots (\code{plotType = 'variable'}).}
 
-  \item{plotSize}{a quoted word indicating the column in \code{treeData} that contains the plot size
+  \item{plotSize}{the unquoted name of the column in \code{treeData} that contains the plot size
                   on which the individual tree was measured. This is only relevant when \code{plotType = 'fixed'}. 
                   NOTE: the plot size should be provided in the area units that you want to use 
                   for calculating per unit area values in the stand or stock table. For example, if you 
@@ -47,7 +48,7 @@ standStock(treeData, plotID, variable, grpBy, plotType, plotSize,
   \item{BAF}{a numeric value indicating the basal area factor used for variable radius plots. This 
              is only relevant when \code{plotType = 'variable'}.}
 
-  \item{baColumn}{a quoted name of the column in \code{treeData} that contains the basal 
+  \item{baColumn}{the unquoted name of the column in \code{treeData} that contains the basal 
                   area for each individual tree. This is only required when \code{plotType = 'variable'}.}
 
   \item{...}{currently no additional arguments}
@@ -77,8 +78,8 @@ vrpData
 
 # Calculate a stand table showing trees per acre across the two species
 # and four diameter classes.
-standStock(treeData = vrpData, plotID = 'PointID', variable = 'TreeNum', 
-           grpBy = c('Species', 'DIA_Class'), plotType = 'variable', 
-           BAF = 10, baColumn = 'BA_sq_ft')
+standStock(treeData = vrpData, plotID = PointID, variable = TreeNum, 
+           grpBy = c(Species, DIA_Class), plotType = 'variable', 
+           BAF = 10, baColumn = BA_sq_ft)
 }
 

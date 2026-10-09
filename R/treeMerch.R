@@ -33,9 +33,8 @@ treeMerch <- function(data, pricing, mht_units = 'log', dbh_units = 'in', ...) {
   comb_dat <- dplyr::left_join(data, pricing, by = 'Product_Type')
 
   # Determine volume of tree ----------------------------------------------
-  vol_result <- treeVolume(dbh = comb_dat$DBH, mht = comb_dat$Height,
-                           mht_units = mht_units, gfc = comb_dat$GFC,
-                           type = comb_dat$Vol_Type)
+  vol_result <- treeVolume(data = comb_dat, dbh = DBH, mht = Height,
+                           type = Vol_Type, mht_units = mht_units, gfc = GFC)
   comb_dat$Volume <- vol_result$volume
   comb_dat$Vol_Units <- vol_result$units
 

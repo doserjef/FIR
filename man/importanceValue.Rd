@@ -20,18 +20,19 @@ importanceValue(treeData, plotID, baColumn, species, standID, ...)
 
   \item{treeData}{a data frame consisting of individual tree measurements. The rows correspond
                   to individual trees and the columns correspond to different measurements and/or 
-                  information on the tree. }
+                  information on the tree. Column names supplied to the other arguments must be
+                  given unquoted (e.g., \code{plotID = PointID}).}
 
-  \item{plotID}{a quoted name of the column in \code{treeData} that contains the ID
+  \item{plotID}{the unquoted name of the column in \code{treeData} that contains the ID
                 of the plot on which each individual tree was measured.}
 
-  \item{baColumn}{a quoted name of the column in \code{treeData} that contains the basal 
+  \item{baColumn}{the unquoted name of the column in \code{treeData} that contains the basal 
                   area for each individual tree.}
 
-  \item{species}{a quoted name of the column in \code{treeData} that contains the species
+  \item{species}{the unquoted name of the column in \code{treeData} that contains the species
                  ID for each individual tree.}
 
-  \item{standID}{a quoted name of a column in \code{treeData} that contains the stand 
+  \item{standID}{the unquoted name of a column in \code{treeData} that contains the stand 
                  ID. If this is specified, importance values will be provided separately 
                  for each stand in the data set. Note this doesn't necessarily need to 
                  correspond to stands, but could indicate some other form of geographical
@@ -59,7 +60,7 @@ vrpData
 
 # Calculate a stand table showing trees per acre across the two species
 # and four diameter classes.
-importanceValue(treeData = vrpData, plotID = 'PointID', baColumn = 'BA_sq_ft', 
-                species = 'Species')
+importanceValue(treeData = vrpData, plotID = PointID, baColumn = BA_sq_ft, 
+                species = Species)
 }
 

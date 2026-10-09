@@ -6,6 +6,9 @@ standEsts <- function(plotData, variable, grpBy = NULL,
   if (missing(plotData)) {
     stop('plotData must be provided')
   }
+  if (!is.data.frame(plotData)) {
+    stop('plotData must be a data frame where each row corresponds to an individual plot')
+  }
   if (missing(variable)) {
     stop('you need to specify the variable you want to estimate (variable)')
   }
@@ -15,12 +18,25 @@ standEsts <- function(plotData, variable, grpBy = NULL,
   if (confLevel <= 0 | confLevel >= 1) {
     stop('confLevel must be a numeric value between 0 and 1')
   }
+  # Capture the unquoted column names
+  col_exprs <- list(variable = rlang::enexpr(variable))
+  for (arg_name in names(col_exprs)) {
+    if (!rlang::is_symbol(col_exprs[[arg_name]])) {
+      stop(paste0(arg_name, ' must be the unquoted name of a column in plotData'))
+    }
+    col_name <- rlang::as_string(col_exprs[[arg_name]])
+    if (!(col_name %in% colnames(plotData))) {
+      stop(paste0('column "', col_name, '" supplied to ', arg_name, ' is not in plotData'))
+    }
+  }
+  # grpBy and standID can be one or more unquoted column names (e.g., grpBy = c(Species, DIA_Class))
+  grpBy_names <- getColNames(rlang::enexpr(grpBy), 'grpBy', plotData, 'plotData')
+  standID_names <- getColNames(rlang::enexpr(standID), 'standID', plotData, 'plotData')
 
   # Prep the data for summarizing -----------------------------------------
-  # Convert supplied characters to symbols
-  variableSyms <- rlang::sym(variable)
-  grpBySyms <- rlang::syms(grpBy)
-  standIDSyms <- rlang::syms(standID)
+  variableSyms <- col_exprs$variable
+  grpBySyms <- rlang::syms(grpBy_names)
+  standIDSyms <- rlang::syms(standID_names)
   # Shrink the size of plotData for ease
   plotData <- plotData %>%
     dplyr::select(!!variableSyms, !!!grpBySyms, !!!standIDSyms)

@@ -5,6 +5,9 @@ standStock <- function(treeData, plotID, variable, grpBy, plotType,
   if (missing(treeData)) {
     stop('treeData must be provided')
   }
+  if (!is.data.frame(treeData)) {
+    stop('treeData must be a data frame where each row corresponds to an individual tree')
+  }
   if (missing(variable)) {
     stop('you need to specify the variable you want to summarize in the stand/stock table (variable)')
   }
@@ -29,22 +32,35 @@ standStock <- function(treeData, plotID, variable, grpBy, plotType,
   if (plotType == 'variable' & missing(baColumn)) {
     stop('a column must be included in treeData that contains the basal area (baColumn)')
   }
+  # Capture the unquoted column names
+  col_exprs <- list(plotID = rlang::enexpr(plotID), variable = rlang::enexpr(variable))
+  if (plotType == 'fixed') {
+    col_exprs$plotSize <- rlang::enexpr(plotSize)
+  }
+  if (plotType == 'variable') {
+    col_exprs$baColumn <- rlang::enexpr(baColumn)
+  }
+  for (arg_name in names(col_exprs)) {
+    if (!rlang::is_symbol(col_exprs[[arg_name]])) {
+      stop(paste0(arg_name, ' must be the unquoted name of a column in treeData'))
+    }
+    col_name <- rlang::as_string(col_exprs[[arg_name]])
+    if (!(col_name %in% colnames(treeData))) {
+      stop(paste0('column "', col_name, '" supplied to ', arg_name, ' is not in treeData'))
+    }
+  }
+  # grpBy can be one or more unquoted column names (e.g., grpBy = c(Species, DIA_Class))
+  grpBy_names <- getColNames(rlang::enexpr(grpBy), 'grpBy', treeData, 'treeData')
+  if (length(grpBy_names) == 0) {
+    stop('you need to specify the variable(s) to group the stand/stock table by (grpBy)')
+  }
 
   # Prep the data for summarizing -----------------------------------------
-  # Convert supplied characters to symbols
-  plotIDSyms <- rlang::sym(plotID)
-  variableSyms <- rlang::sym(variable)
-  grpBySyms <- rlang::syms(grpBy)
-  if (plotType == 'variable') {
-    baColumnSyms <- rlang::sym(baColumn)
-  } else {
-    baColumnSyms <- NULL
-  }
-  if (plotType == 'fixed') {
-    plotSizeSyms <- rlang::sym(plotSize)
-  } else {
-    plotSizeSyms <- NULL
-  }
+  plotIDSyms <- col_exprs$plotID
+  variableSyms <- col_exprs$variable
+  grpBySyms <- rlang::syms(grpBy_names)
+  baColumnSyms <- col_exprs$baColumn
+  plotSizeSyms <- col_exprs$plotSize
   # Shrink the size of treeData for ease
   treeData <- treeData %>%
     dplyr::select(!!plotIDSyms, !!variableSyms, !!!grpBySyms, !!baColumnSyms, !!plotSizeSyms)
@@ -73,13 +89,13 @@ standStock <- function(treeData, plotID, variable, grpBy, plotType,
     dplyr::group_by(!!!grpBySyms) %>%
     dplyr::summarize(variable = mean(variable), .groups = 'drop')
 
-  if (length(grpBy) == 1) {
+  if (length(grpBy_names) == 1) {
     return(standData)
   }
 
-  # Reformat the stand table in different ways depending on how many 
+  # Reformat the stand table in different ways depending on how many
   # grouping variables there are.
-  if (length(grpBy) > 1) {
+  if (length(grpBy_names) > 1) {
     standWide <- standData %>%
       pivot_wider(id_cols = !!grpBySyms[[1]],
                   names_from = !!grpBySyms[[2]],

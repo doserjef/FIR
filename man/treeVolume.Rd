@@ -3,7 +3,7 @@
 \title{Calculate board foot or cubic foot volumes of standing trees}
 
 \usage{
-treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
+treeVolume(data, dbh, mht, type, mht_units = 'log', gfc = 78, ...)
 }
 
 \description{
@@ -18,30 +18,35 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
 
 \arguments{
 
-  \item{dbh}{a vector of numeric values indicating the diameter at breast height 
-             (4.5 in. above the ground) in inches for each standing tree.}
+  \item{data}{a data frame consisting of individual tree measurements. The rows correspond
+              to individual trees and the columns correspond to different measurements and/or
+              information on the tree. Column names supplied to \code{dbh}, \code{mht},
+              \code{type}, and \code{gfc} must be given unquoted (e.g., \code{dbh = DBH}).}
 
-  \item{mht}{a vector of numeric values indicating the merchantable height of the 
-             tree specified either in feet or in the number of 16 ft logs reported 
-             to the nearest half log. Units are specified in \code{mht_units}.}
+  \item{dbh}{the unquoted name of the column in \code{data} that contains the diameter at
+             breast height (4.5 in. above the ground) in inches for each standing tree.}
+
+  \item{mht}{the unquoted name of the column in \code{data} that contains the merchantable
+             height of each tree specified either in feet or in the number of 16 ft logs
+             reported to the nearest half log. Units are specified in \code{mht_units}.}
+
+  \item{type}{the log rule or volume formula to use for estimating volume. This can be
+              either the unquoted name of a column in \code{data} that contains a separate
+              value for each tree, or a single quoted value (e.g., \code{type = 'doyle'}) if
+              the same volume type is applied to all trees. Currently supported board foot log rules are Doyle (\code{'doyle'}),
+              Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}).
+              For cubic foot volumes, use \code{'mesavage_cubic_ft'} for estimates from the
+              Mesavage (1947) GFC 78 volume table, or \code{'huber'} to apply Huber's Formula
+              (basal area in sq ft multiplied by merchantable height in ft). Board foot and
+              cubic foot types may be mixed freely across trees.}
 
   \item{mht_units}{the units of the merchantable height measurements. Current options
                    include 16-ft logs (\code{'log'}) or feet (\code{'ft'}). Default is
                    16-ft logs.}
 
-  \item{gfc}{a vector of numeric values indicating the Girard Form Class for each tree. 
-             This can be a vector with a separate value for each tree, or a single value 
-             if the same Girard form class is applied to all trees.}
-
-  \item{type}{the name of the log rule or volume formula to use for estimating volume.
-              Currently supported board foot log rules are Doyle (\code{'doyle'}),
-              Scribner (\code{'scribner'}), and International 1/4 inch (\code{'international'}).
-              For cubic foot volumes, use \code{'mesavage_cubic_ft'} for estimates from the
-              Mesavage (1947) GFC 78 volume table, or \code{'huber'} to apply Huber's Formula
-              (basal area in sq ft multiplied by merchantable height in ft). Can be a single
-              value applied to all trees or a vector of length \code{length(dbh)} assigning a
-              different type to each tree. Board foot and cubic foot types may be mixed freely
-              within a single call.}
+  \item{gfc}{the Girard Form Class for each tree. This can be either the unquoted name of a
+             column in \code{data} that contains a separate value for each tree, or a single
+             numeric value if the same Girard form class is applied to all trees. Default is 78.}
 
   \item{...}{currently no additional arguments}
 
@@ -68,19 +73,24 @@ treeVolume(dbh, mht, mht_units = 'log', gfc = 78, type, ...)
 }
 
 \value{
-  A data frame with one row per tree and three columns: \code{volume} (the estimated volume),
-  \code{units} (either \code{'board_ft'} or \code{'cubic_ft'}), and \code{type} (the log rule
-  or volume formula used for that tree).
+  The input data frame \code{data} with two additional columns: \code{volume} (the estimated
+  volume of each tree) and \code{units} (either \code{'board_ft'} or \code{'cubic_ft'}). If
+  \code{type} is supplied as a single quoted value rather than a column in \code{data}, a
+  third column \code{type} is also added containing the volume type used for each tree.
+  If \code{data} already contains columns with any of these names, they are overwritten
+  with a warning.
 }
 
 \examples{
-dbh <- c(10, 20, 18, 34)
-mht_log <- c(1.5, 3, 2.5, 4)
-# Board foot volume using the International 1/4 inch log rule
-treeVolume(dbh = dbh, mht = mht_log, type = 'international')
-# Cubic foot volume using Huber's Formula
-treeVolume(dbh = dbh, mht = mht_log, type = 'huber')
+trees <- data.frame(DBH = c(10, 20, 18, 34),
+                    Height = c(1.5, 3, 2.5, 4))
+# Board foot volume using the International 1/4 inch log rule for all trees
+treeVolume(data = trees, dbh = DBH, mht = Height, type = 'international')
 # Mixed: first two trees in board feet (Doyle), last two in cubic feet (Huber)
-treeVolume(dbh = dbh, mht = mht_log, type = c('doyle', 'doyle', 'huber', 'huber'))
+trees$VolType <- c('doyle', 'doyle', 'huber', 'huber')
+treeVolume(data = trees, dbh = DBH, mht = Height, type = VolType)
+# Girard form class supplied as a column
+trees$GFC <- c(78, 80, 76, 78)
+treeVolume(data = trees, dbh = DBH, mht = Height, type = VolType, gfc = GFC)
 }
 
